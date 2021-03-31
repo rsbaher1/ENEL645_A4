@@ -1,0 +1,53 @@
+#The number of classes across samples looks balanced
+# Let's shuffle the samples and split them
+indexes = np.arange(X_dev.shape[0], dtype = int)
+np.random.shuffle(indexes)
+X_dev = X_dev[indexes]
+Y_dev = Y_dev[indexes]
+
+nsplit = int(0.75*X_dev.shape[0]) # Train/validation split
+
+# Train and validation split
+X_train = X_dev[:nsplit]
+Y_train = Y_dev[:nsplit]
+X_val = X_dev[nsplit:]
+Y_val = Y_dev[nsplit:]
+
+print("\nTrain set")
+print("Images: ",X_train.shape)
+print("Labels shape: ",Y_train.shape)
+print("\nValidation set")
+print("Images: ",X_val.shape)
+print("Labels shape: ",Y_val.shape)
+
+
+print(X_train.min(),X_train.max(),X_train.mean(),X_train.std())
+print(X_val.min(),X_val.max(),X_val.mean(),X_val.std())
+
+
+2. Data Scaling
+norm_type = 0 # 0 -> min-max; 1-> standardization
+
+if norm_type == 0:
+    X_train = X_train/255
+    X_val = X_val/255
+    X_test = X_test/255
+elif norm_type == 1:
+    train_mean, train_std = X_train.mean(),X_train.std() 
+    X_train = (X_train - train_mean)/train_std
+    X_val = (X_val - train_mean)/train_std
+    X_test = (X_test - train_mean)/train_std
+else:
+    pass
+    
+    3. One hot encoding
+
+Y_train_oh = tf.keras.utils.to_categorical(Y_train)
+Y_val_oh = tf.keras.utils.to_categorical(Y_val)
+Y_test_oh = tf.keras.utils.to_categorical(Y_test)
+
+print("Labels:")
+print(Y_train[:5])
+print()
+print("One hot encoded labels:")
+print(Y_train_oh[:5])
